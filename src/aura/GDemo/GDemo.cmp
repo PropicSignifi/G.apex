@@ -1,0 +1,60 @@
+<aura:component implements="force:appHostable" controller="GDemoController">
+    <aura:attribute name="fields" type="Object" access="PRIVATE"/>
+    <aura:attribute name="currentTypeName" type="String" access="PRIVATE"/>
+    <aura:attribute name="query" type="String" access="PRIVATE"/>
+    <aura:attribute name="result" type="String" access="PRIVATE"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+
+    <lightning:card aura:id="app">
+        <aura:set attribute="title">
+            <h1 class="slds-text-align_center">G.apex Demo</h1>
+        </aura:set>
+        <p class="slds-p-horizontal_small">
+            <lightning:textarea name="query" label="G Query" class="queryTextarea" value="{! v.query }"/>
+            <lightning:button name="execute" label="Execute" variant="brand" onclick="{! c.onExecute }"/>
+            <code>
+                <pre>{! v.result }</pre>
+            </code>
+            <hr/>
+            <h1 class="slds-text-align_center slds-m-bottom_large">
+                <a href="javascript:void(0)" onclick="{! c.onClickRoot }">
+                    {! v.currentTypeName ? v.currentTypeName : 'Schema' }
+                </a>
+            </h1>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Name">Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Type">Type</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{! v.fields }" var="field" indexVar="index">
+                        <tr>
+                            <th scope="row">
+                                <div class="slds-truncate" title="{! field.name }">{! field.name }</div>
+                            </th>
+                            <td>
+                                <div class="slds-truncate" title="{! field.type }">
+                                    <aura:if isTrue="{! field.hideLink }">
+                                        {! field.type }
+                                        <aura:set attribute="else">
+                                            <a class="{! index }" href="javascript:void(0)" onclick="{! c.onClickField }">
+                                                {! field.type }
+                                            </a>
+                                        </aura:set>
+                                    </aura:if>
+                                </div>
+                            </td>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </p>
+    </lightning:card>
+</aura:component>
