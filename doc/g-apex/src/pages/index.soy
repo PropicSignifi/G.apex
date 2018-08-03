@@ -1,0 +1,130 @@
+---
+title: "Home"
+description: "G.apex is a library to set up GraphQL-lite features in Apex."
+---
+
+{namespace pageIndex}
+
+/**
+ */
+{template .render}
+	{@param site: ?}
+
+	{call main.render data="all"}
+		{param content kind="html"}
+			{call .header data="all" /}
+			{call .why /}
+			{call .features /}
+			{call .how /}
+			{call .highlights /}
+			{call Footer.render data="all" /}
+		{/param}
+	{/call}
+{/template}
+
+/**
+ */
+{template .header}
+	{@param site: ?}
+
+	<header class="header">
+		<div class="container">
+			<h1 class="header-title">{$site.title}</h1>
+			<h2 class="header-subtitle">{$site.index.description}</h2>
+			<div class="btn-group">
+				<a href="/g-apex/tutorials/getting_started/step_1.html" class="btn btn-accent btn-sm">Get Started</a>
+				<a href="https://github.com/Click-to-Cloud/G.apex/" class="btn btn-success btn-sm">GitHub</a>
+				<a href="/" onclick="location.assign('/')" class="btn btn-default btn-sm">Not Interested</a>
+			</div>
+		</div>
+	</header>
+{/template}
+
+/**
+ */
+{template .why}
+	<article class="about">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 col-md-offset-2">
+					<h3 class="about-title">Why G.apex?</h3>
+					<p class="about-description">GraphQL is flexible and powerful, yet there is no direct support in Apex. G.apex addresses this issue by developing a GraphQL-like query language to offer most of the GraphQL benefits on Salesforce platform. G.apex is not GraphQL-compatible, but it adopts the same paradigm in development, so that it lowers the learning curve.</p>
+				</div>
+			</div>
+		</div>
+	</article>
+{/template}
+
+/**
+ */
+{template .features}
+	<div class="features">
+		<div class="container">
+			<div class="row">
+				<section class="feature col-md-4 col-md-offset-2">
+					<h3 class="feature-title">GraphQL Lite</h3>
+					<p class="feature-description">G.apex offers simplified features from GraphQL in Apex.</p>
+				</section>
+				<section class="feature col-md-4">
+					<h3 class="feature-title">Rich Feature</h3>
+					<p class="feature-description">G.apex tries to include as many features from GraphQL as possible.</p>
+				</section>
+				<section class="feature col-md-4">
+					<h3 class="feature-title">Query Editor</h3>
+					<p class="feature-description">G.apex has a builtin visual Query Editor to help you build queris.</p>
+				</section>
+			</div>
+		</div>
+	</div>
+{/template}
+
+/**
+ */
+{template .how}
+	<article class="about">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 col-md-offset-2">
+					<h3 class="about-title">As easy as GraphQL can be</h3>
+					<p class="about-description">G.apex just carries similar concepts from GraphQL, and is designed to be easy to use.</p>
+				</div>
+			</div>
+		</div>
+	</article>
+{/template}
+
+/**
+ */
+{template .highlights}
+	<div class="highlights">
+		<div class="container">
+			<section class="highlight row">
+				<div class="col-md-6 col-md-offset-2">
+					<h4 class="highlight-title">JSON Query</h4>
+					<p class="highlight-description">G.apex adopts JSON query to make both building and parsing easier.</p>
+				</div>
+				<div class="col-md-5 col-md-offset-1">
+					<img class="highlight-image" src="/g-apex/images/highlight_1.png" alt="JSON Query" height="200">
+				</div>
+			</section>
+			<section class="highlight row">
+				<div class="col-md-6 col-md-push-9">
+					<h4 class="highlight-title">Schema Types</h4>
+					<p class="highlight-description">G.apex offers fluent APIs to build type in query schema.</p>
+				</div>
+				<div class="col-md-5 col-md-offset-2 col-md-pull-6">
+					<img class="highlight-image" src="/g-apex/images/highlight_2.png" alt="Schema Types" height="200">
+				</div>
+			</section>
+			<section class="highlight row">
+				<div class="col-md-6 col-md-offset-2">
+					<h4 class="highlight-title">Visual Assistance</h4>
+					<p class="highlight-description">Query Editor and Schema Explorer can help you explore G.apex queries.</p>
+				</div>
+				<div class="col-md-5 col-md-offset-1">
+					<img class="highlight-image" src="/g-apex/images/highlight_3.png" alt="Visual Assistance" height="200">
+				</div>
+			</section>
+		</div>
+	</div>
+{/template}
