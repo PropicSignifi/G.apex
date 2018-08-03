@@ -17,9 +17,7 @@ G.apex has a dependency over R.apex, but you don't have to use anything from R.a
 ### G.apex Demo
 G.apex provides a Lightning component for you to explore the features of G.apex.
 
-To use this component after installing G.apex, simply create a Lightning tab and select c:G_apex_demo in the dropdown list. Then visit the link in your org:
-
-*https://YOUR_ORG/lightning/n/G_apex_demo*
+To use this component after installing G.apex, simply create a Lightning tab and select c:G_apex_demo in the dropdown list. Then visit the tab link in your org.
 
 The top part of the component is the Query Editor, where you can edit your G.apex query and execute them against a small set of data.
 
