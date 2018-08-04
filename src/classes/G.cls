@@ -664,6 +664,11 @@ public class G {
                 ObjectTypeParam param = field.params.get(paramName);
                 if(queryMap.containsKey(PARAMETER_SIGN + paramName)) {
                     Object paramValue = queryMap.get(PARAMETER_SIGN + paramName);
+
+                    // convert value
+                    paramValue = convertValue(paramValue, param.type);
+
+                    // validate value
                     Boolean pass = true;
                     if(param.validate != null) {
                         pass = (Boolean)R.toBoolean.run(param.validate.run(paramValue));
@@ -673,7 +678,7 @@ public class G {
                         throw new GException('Invalid param value for ' + PARAMETER_SIGN + paramName + ' in ' + this.name);
                     }
 
-                    args.put(paramName, convertValue(paramValue, param.type));
+                    args.put(paramName, paramValue);
                 }
             }
 
@@ -693,6 +698,40 @@ public class G {
             }
             else if(type == StringType) {
                 return R.toString.run(rawValue);
+            }
+            else if(type instanceof ListType) {
+                List<Object> result = new List<Object>();
+                DataType elementType = ((ListType)type).getElementType();
+
+                if(rawValue instanceof List<Object>) {
+                    for(Object raw : (List<Object>)rawValue) {
+                        result.add(convertValue(raw, elementType));
+                    }
+                }
+
+                return result;
+            }
+            else if(type instanceof ObjectType) {
+                Map<String, Object> result = new Map<String, Object>();
+
+                if(rawValue instanceof Map<String, Object>) {
+                    Map<String, Object> rawMap = (Map<String, Object>)rawValue;
+
+                    ObjectType ot = (ObjectType)type;
+                    for(ObjectTypeField field : ot.fields.values()) {
+                        String fieldName = field.name;
+                        DataType fieldType = field.type;
+                        if(rawMap.containsKey(fieldName)) {
+                            Object raw = rawMap.get(fieldName);
+                            result.put(fieldName, convertValue(raw, fieldType));
+                        }
+                    }
+                }
+
+                return result;
+            }
+            else if(type instanceof ReferenceType) {
+                return convertValue(rawValue, ((ReferenceType)type).getReferencedType());
             }
             else {
                 return rawValue;
