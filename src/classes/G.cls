@@ -228,7 +228,7 @@ public class G {
      * @param objectType The object type name
      * @return Map<String, String>
      * */
-    public static Map<String, String> describe(String objectType) {
+    public static Map<String, Object> describe(String objectType) {
         if(String.isBlank(objectType)) {
             if(registeredSchema != null) {
                 return registeredSchema.describe();
@@ -939,14 +939,24 @@ public class G {
          * Return a description of the object type
          *
          * Example:
-         * Map<String, String> description = new G.ObjectType('Book').describe();
+         * Map<String, Object> description = new G.ObjectType('Book').describe();
          *
-         * @return Map<String, String>
+         * @return Map<String, Object>
          * */
-        public Map<String, String> describe() {
-            Map<String, String> data = new Map<String, String>();
+        public Map<String, Object> describe() {
+            Map<String, Object> data = new Map<String, Object>();
             for(ObjectTypeField field : this.fields.values()) {
-                data.put(field.name, field.type.toString());
+                Map<String, Object> info = new Map<String, Object>();
+
+                info.put('type', field.type.toString());
+
+                Map<String, String> params = new Map<String, String>();
+                for(ObjectTypeParam param : field.params.values()) {
+                    params.put(param.name, param.type.toString());
+                }
+                info.put('params', params);
+
+                data.put(field.name, info);
             }
 
             return data;

@@ -34,18 +34,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <aura:iteration items="{! v.fields }" var="field" indexVar="index">
+                    <aura:iteration items="{! v.fields }" var="field">
                         <tr>
                             <th scope="row">
-                                <div class="slds-truncate" title="{! field.name }">{! field.name }</div>
+                                <div class="slds-truncate" title="{! field.name }">
+                                    {! field.name }
+                                    <aura:if isTrue="{! field.params.length > 0 }">
+                                        (
+                                         <aura:iteration items="{! field.params }" var="param">
+                                            @{! param.name }:
+                                            <aura:if isTrue="{! param.type.link == '' }">
+                                                {! param.type.name }
+                                                <aura:set attribute="else">
+                                                    <a class="{! param.type.link }" href="javascript:void(0)" onclick="{! c.onClickField }">
+                                                        {! param.type.name }
+                                                    </a>
+                                                </aura:set>
+                                            </aura:if>
+                                         </aura:iteration>
+                                        )
+                                    </aura:if>
+                                </div>
                             </th>
                             <td>
                                 <div class="slds-truncate" title="{! field.type }">
-                                    <aura:if isTrue="{! field.hideLink }">
-                                        {! field.type }
+                                    <aura:if isTrue="{! field.type.link == '' }">
+                                        {! field.type.name }
                                         <aura:set attribute="else">
-                                            <a class="{! index }" href="javascript:void(0)" onclick="{! c.onClickField }">
-                                                {! field.type }
+                                            <a class="{! field.type.link }" href="javascript:void(0)" onclick="{! c.onClickField }">
+                                                {! field.type.name }
                                             </a>
                                         </aura:set>
                                     </aura:if>

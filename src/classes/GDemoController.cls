@@ -115,7 +115,7 @@ public class GDemoController {
     }
 
     @AuraEnabled
-    public static Map<String, String> describe(String type) {
+    public static Map<String, Object> describe(String type) {
         try {
             return G.describe(type);
         }
