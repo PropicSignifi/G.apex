@@ -55,6 +55,11 @@ public class G {
     public static final String TYPE_LONG = 'Long';
 
     /**
+     * Double type
+     * */
+    public static final String TYPE_DOUBLE = 'Double';
+
+    /**
      * String type
      * */
     public static final String TYPE_STRING = 'String';
@@ -92,6 +97,11 @@ public class G {
      * Long DataType
      * */
     public static final DataType LongType = new SimpleType(TYPE_LONG);
+
+    /**
+     * Double DataType
+     * */
+    public static final DataType DoubleType = new SimpleType(TYPE_DOUBLE);
 
     /**
      * String DataType
@@ -695,6 +705,9 @@ public class G {
             }
             else if(type == LongType) {
                 return R.toLong.run(rawValue);
+            }
+            else if(type == DoubleType) {
+                return R.toDouble.run(rawValue);
             }
             else if(type == StringType) {
                 return R.toString.run(rawValue);

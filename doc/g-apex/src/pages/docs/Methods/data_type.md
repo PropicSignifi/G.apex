@@ -17,6 +17,7 @@ weight: 4
 | Boolean | G.BooleanType |
 | Integer | G.IntegerType |
 | Long | G.LongType |
+| Double | G.DoubleType |
 | String | G.StringType |
 | List | new G.ListType(G.DataType) |
 | Object | new G.ObjectType(String) / new G.ObjectType(String, String) |
