@@ -70,6 +70,11 @@ public class G {
     public static final String TYPE_LIST = 'List';
 
     /**
+     * Map type
+     * */
+    public static final String TYPE_MAP = 'Map';
+
+    /**
      * Object type
      * */
     public static final String TYPE_OBJECT = 'Object';
@@ -308,6 +313,15 @@ public class G {
                 fieldType = ((ReferenceType)elementType).getReferencedType();
             }
         }
+        else if(type instanceof MapType) {
+            DataType elementType = ((MapType)type).getElementType();
+            if(elementType instanceof ObjectType) {
+                fieldType = (ObjectType)elementType;
+            }
+            else if(elementType instanceof ReferenceType) {
+                fieldType = ((ReferenceType)elementType).getReferencedType();
+            }
+        }
 
         return fieldType;
     }
@@ -376,6 +390,40 @@ public class G {
          * */
         public ListType(DataType elementType) {
             super(TYPE_LIST);
+
+            if(elementType == null) {
+                throw new GException('Element type is required');
+            }
+            this.elementType = elementType;
+        }
+
+        /**
+         * Get the element type
+         *
+         * @return DataType
+         * */
+        public DataType getElementType() {
+            return this.elementType;
+        }
+
+        public override String toString() {
+            return this.getType() + '<' + this.elementType.toString() + '>';
+        }
+    }
+
+    /**
+     * Map DataType
+     *
+     * A MapType should specify the type of the element
+     * */
+    public class MapType extends DataType {
+        private DataType elementType;
+
+        /**
+         * Construct a MapType by the element type
+         * */
+        public MapType(DataType elementType) {
+            super(TYPE_MAP);
 
             if(elementType == null) {
                 throw new GException('Element type is required');
@@ -724,6 +772,20 @@ public class G {
 
                 return result;
             }
+            else if(type instanceof MapType) {
+                Map<String, Object> result = new Map<String, Object>();
+                DataType elementType = ((MapType)type).getElementType();
+
+                if(rawValue instanceof Map<String, Object>) {
+                    Map<String, Object> m = (Map<String, Object>)rawValue;
+                    for(String key : m.keySet()) {
+                        Object value = m.get(key);
+                        result.put(key, convertValue(value, elementType));
+                    }
+                }
+
+                return result;
+            }
             else if(type instanceof ObjectType) {
                 Map<String, Object> result = new Map<String, Object>();
 
@@ -875,23 +937,14 @@ public class G {
                     // extract object type before executing them on the resolved data
                     ObjectType fieldType = extractObjectType(field.type);
                     Boolean isList = field.type instanceof ListType;
+                    Boolean isMap = field.type instanceof MapType;
 
                     if(fieldType != null) {
                         // executing object type
                         debug('process object type: ' + fieldType);
-                        if(!isList) {
-                            // processing single object type
-                            debug('process single');
-                            List<Object> executedList = fieldType.execute(resolvedList, subQueryData);
-                            for(Integer i = 0; i < resolvedList.size(); i++) {
-                                Object executed = executedList.get(i);
-                                Map<String, Object> dest = (Map<String, Object>)resultList.get(i);
-                                dest.put(alias, executed);
-                            }
-                        }
-                        else {
+                        if(isList) {
                             // processing a list of object type
-                            debug('process multiple');
+                            debug('process list');
 
                             // flatten the list so that we can apply batch resolving
                             List<Object> nestedList = (List<Object>)resolvedList;
@@ -923,6 +976,60 @@ public class G {
                                 Object output = outputList.get(i);
                                 Map<String, Object> dest = (Map<String, Object>)resultList.get(i);
                                 dest.put(alias, output);
+                            }
+                        }
+                        else if(isMap) {
+                            // processing a map of object type
+                            debug('process map');
+
+                            // flatten the map so that we can apply batch resolving
+                            List<Object> nestedList = (List<Object>)resolvedList;
+                            List<Integer> partitionList = new List<Integer>();
+                            List<Object> flattenedList = new List<Object>();
+                            List<String> flattenedKeyList = new List<String>();
+                            for(Object childMapObj : nestedList) {
+                                Map<String, Object> childMap = (Map<String, Object>)childMapObj;
+                                partitionList.add(childMap.size());
+                                for(String childKey : childMap.keySet()) {
+                                    Object childValue = childMap.get(childKey);
+                                    flattenedKeyList.add(childKey);
+                                    flattenedList.add(childValue);
+                                }
+                            }
+
+                            List<Object> executedList = fieldType.execute(flattenedList, subQueryData);
+
+                            // restore the map structure
+                            List<Map<String, Object>> outputList = new List<Map<String, Object>>();
+                            Integer index = 0;
+                            for(Integer partition : partitionList) {
+                                Map<String, Object> output = new Map<String, Object>();
+                                for(Integer i = index; i < index + partition; i++) {
+                                    String flattenedKey = flattenedKeyList.get(i);
+                                    Object flattenedValue = executedList.get(i);
+                                    output.put(flattenedKey, flattenedValue);
+                                }
+
+                                outputList.add(output);
+                                index += partition;
+                            }
+
+                            // set back the data
+                            for(Integer i = 0; i < outputList.size(); i++) {
+                                Object output = outputList.get(i);
+                                Map<String, Object> dest = (Map<String, Object>)resultList.get(i);
+                                dest.put(alias, output);
+                            }
+
+                        }
+                        else {
+                            // processing single object type
+                            debug('process single');
+                            List<Object> executedList = fieldType.execute(resolvedList, subQueryData);
+                            for(Integer i = 0; i < resolvedList.size(); i++) {
+                                Object executed = executedList.get(i);
+                                Map<String, Object> dest = (Map<String, Object>)resultList.get(i);
+                                dest.put(alias, executed);
                             }
                         }
                     }

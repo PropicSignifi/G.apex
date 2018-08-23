@@ -46,7 +46,8 @@ private class GTest {
         .addField('id', G.StringType, 'Id')
         .addField('name', G.StringType, 'Name')
         .addField('number', G.IntegerType)
-        .addField('author', new G.ReferenceType('Author'), R.constant.apply(new List<Object>{ author }));
+        .addField('author', new G.ReferenceType('Author'), R.constant.apply(new List<Object>{ author }))
+        .addField('meta', new G.MapType(new G.ReferenceType('Author')), R.constant.apply(new List<Object>{ new Map<String, Object>{ 'a' => author } }));
 
     private static G.ObjectType authorType = new G.ObjectType('Author')
         .addField('id', G.StringType)
@@ -133,6 +134,35 @@ private class GTest {
                 'books' => new List<Object>{
                     new Map<String, Object> {
                         'name' => 'First Book'
+                    }
+                }
+            }
+        };
+
+        System.assertEquals(expected, data);
+    }
+
+    @isTest
+    private static void testMap() {
+        Map<String, Object> queryData = new Map<String, Object>{
+            'query' => new Map<String, Object>{
+                'book' => new Map<String, Object>{
+                    'meta' => new Map<String, Object>{
+                        'name' => ''
+                    }
+                }
+            }
+        };
+
+        Map<String, Object> data = (Map<String, Object>)G.execute(schema, queryData);
+
+        Map<String, Object> expected = new Map<String, Object>{
+            'query' => new Map<String, Object>{
+                'book' => new Map<String, Object>{
+                    'meta' => new Map<String, Object>{
+                        'a' => new Map<String, Object>{
+                            'name' => 'First Author'
+                        }
                     }
                 }
             }

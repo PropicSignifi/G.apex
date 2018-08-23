@@ -20,6 +20,7 @@ weight: 4
 | Double | G.DoubleType |
 | String | G.StringType |
 | List | new G.ListType(G.DataType) |
+| Map | new G.MapType(G.DataType) |
 | Object | new G.ObjectType(String) / new G.ObjectType(String, String) |
 | Reference | new G.ReferenceType(String) |
 
@@ -77,5 +78,17 @@ All data types have the following methods:
 | ------ | ----------- |
 | String getName() | Get the name of the object type |
 | ObjectType getReferencedType() | Get the referenced object type |
+
+</article>
+
+<article id="6">
+
+## Map Type Methods
+
+Map type receives the element type as the type of the value and its key type is always String.
+
+| Method | Description |
+| ------ | ----------- |
+| G.DataType getElementType() | Get element data type |
 
 </article>
