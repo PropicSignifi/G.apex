@@ -3,10 +3,12 @@
     <aura:attribute name="currentTypeName" type="String" access="PRIVATE"/>
     <aura:attribute name="query" type="String" access="PRIVATE"/>
     <aura:attribute name="result" type="String" access="PRIVATE"/>
+    <aura:attribute name="loading" type="Boolean" access="PRIVATE" default="false"/>
 
     <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
 
     <lightning:card aura:id="app">
+        <lightning:spinner alternativeText="Loading" variant="brand" class="{! v.loading ? 'slds-show' : 'slds-hide'}"/>
         <aura:set attribute="title">
             <h1 class="slds-text-align_center">G.apex Demo</h1>
         </aura:set>

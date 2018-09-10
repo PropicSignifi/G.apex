@@ -17,6 +17,7 @@
         if(type === 'Boolean' ||
             type === 'Integer' ||
             type === 'Long' ||
+            type === 'Double' ||
             type === 'String') {
             return '';
         }
@@ -87,6 +88,8 @@
         var action = cmp.get(actionName);
         action.setParams(params);
 
+        cmp.set('v.loading', true);
+
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === "SUCCESS") {
@@ -102,11 +105,15 @@
                 if (errors) {
                     if (errors[0] && errors[0].message) {
                         console.error("Error message: " + errors[0].message);
+
+                        cmp.set('v.result', errors[0].message);
                     }
                 } else {
                     console.error("Unknown error");
                 }
             }
+
+            cmp.set('v.loading', false);
         });
 
         $A.enqueueAction(action);
