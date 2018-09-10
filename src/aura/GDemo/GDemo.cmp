@@ -3,6 +3,7 @@
     <aura:attribute name="currentTypeName" type="String" access="PRIVATE"/>
     <aura:attribute name="query" type="String" access="PRIVATE"/>
     <aura:attribute name="result" type="String" access="PRIVATE"/>
+    <aura:attribute name="lastTypes" type="List" access="PRIVATE"/>
     <aura:attribute name="loading" type="Boolean" access="PRIVATE" default="false"/>
 
     <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
@@ -20,8 +21,14 @@
             </code>
             <hr/>
             <h1 class="slds-text-align_center slds-m-bottom_large">
+                {! v.currentTypeName ? v.currentTypeName : 'Schema' }
+                -
                 <a href="javascript:void(0)" onclick="{! c.onClickRoot }">
-                    {! v.currentTypeName ? v.currentTypeName : 'Schema' }
+                    Root
+                </a>
+                -
+                <a href="javascript:void(0)" onclick="{! c.onClickBack }">
+                    Back
                 </a>
             </h1>
             <table class="slds-table slds-table_bordered slds-table_cell-buffer">
