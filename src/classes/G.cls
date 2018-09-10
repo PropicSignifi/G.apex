@@ -1263,11 +1263,29 @@ public class G {
          * @return Map<String, Object>
          * */
         public Map<String, Object> convertSObject(SObject so) {
+            return convertObject(so);
+        }
+
+        /**
+         * Convert the object to a map required by the object type
+         *
+         * Example:
+         * MyCustomObject obj = // query
+         * Map<String, Object> data = context.convertSObject(obj);
+         *
+         * @param obj The object
+         * @return Map<String, Object>
+         * */
+        public Map<String, Object> convertObject(Object obj) {
             Map<String, Object> result = new Map<String, Object>();
-            Map<String, Object> fields = so.getPopulatedFieldsAsMap();
             Map<String, String> mapping = this.currentType.getSObjectFieldMapping();
+            Map<String, Object> fields =
+                (obj instanceOf SObject) ?
+                ((SObject)obj).getPopulatedFieldsAsMap() :
+                (Map<String, Object>)JSON.deserializeUntyped(JSON.serialize(obj));
+
             for(String key : mapping.keySet()) {
-                String field = mapping.get(key);
+                String field = addNamespace(mapping.get(key));
                 if(fields.containsKey(field)) {
                     result.put(key, fields.get(field));
                 }
@@ -1626,6 +1644,29 @@ public class G {
             ResolvingContext context = (ResolvingContext)arg3;
 
             return this.resolver.resolve(parent, args, context);
+        }
+    }
+
+    private static String addNamespace(String src) {
+        if (src.endsWithIgnoreCase('__c') ||
+            src.endsWithIgnoreCase('__r') ||
+            src.endsWithIgnoreCase('__pc')) {
+            src = namespace + src;
+        }
+
+        return src;
+    }
+
+    private static String namespace {
+        get {
+            final String className = G.class.getName();
+            final List<String> nameSplit = className.split('\\.');
+
+            if (nameSplit.size() > 1) {
+                return nameSplit.get(0) + '__';
+            } else {
+                return '';
+            }
         }
     }
 
