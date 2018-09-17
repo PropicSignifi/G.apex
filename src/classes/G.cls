@@ -1175,7 +1175,7 @@ public class G {
      * */
     public class ResolvingContext {
         // Current field type
-        private ObjectType currentType;
+        public ObjectType currentType;
 
         // Current query data
         private Map<String, Object> queryData;
