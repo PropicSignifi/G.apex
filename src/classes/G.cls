@@ -517,7 +517,7 @@ public class G {
          * @return String
          * */
         public String getSObjectType() {
-            return this.sObjectType;
+            return G.addNamespace(this.sObjectType);
         }
 
         /**
@@ -707,7 +707,7 @@ public class G {
 
             for(ObjectTypeField field : this.fields.values()) {
                 if(field.sObjectField != null) {
-                    result.put(field.name, field.sObjectField);
+                    result.put(field.name, G.addNamespace(field.sObjectField));
                 }
             }
 
@@ -1200,7 +1200,8 @@ public class G {
          * @return String
          * */
         public String getSObjectType() {
-            return this.currentType == null ? null : this.currentType.getSObjectType();
+            return this.currentType == null ?
+                null : G.addNamespace(this.currentType.getSObjectType());
         }
 
         /**
@@ -1285,7 +1286,7 @@ public class G {
                 (Map<String, Object>)JSON.deserializeUntyped(JSON.serialize(obj));
 
             for(String key : mapping.keySet()) {
-                String field = addNamespace(mapping.get(key));
+                String field = mapping.get(key);
                 if(fields.containsKey(field)) {
                     result.put(key, fields.get(field));
                 }
@@ -1648,9 +1649,7 @@ public class G {
     }
 
     private static String addNamespace(String src) {
-        if (src.endsWithIgnoreCase('__c') ||
-            src.endsWithIgnoreCase('__r') ||
-            src.endsWithIgnoreCase('__pc')) {
+        if (src.countMatches('__') == 1) {
             src = namespace + src;
         }
 
