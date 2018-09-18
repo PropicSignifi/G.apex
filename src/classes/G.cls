@@ -1649,7 +1649,7 @@ public class G {
     }
 
     private static String addNamespace(String src) {
-        if (src.countMatches('__') == 1) {
+        if (src != null && src.countMatches('__') == 1) {
             src = namespace + src;
         }
 
