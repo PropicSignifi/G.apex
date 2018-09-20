@@ -1175,7 +1175,7 @@ public class G {
      * */
     public class ResolvingContext {
         // Current field type
-        public ObjectType currentType;
+        private ObjectType currentType;
 
         // Current query data
         private Map<String, Object> queryData;
@@ -1189,6 +1189,18 @@ public class G {
         public ResolvingContext(DataType currentType, Map<String, Object> queryData) {
             this.currentType = extractObjectType(currentType);
             this.queryData = queryData;
+        }
+
+        /**
+         * Get the object type
+         *
+         * Example:
+         * ObjectType currentType = context.getCurrentObjectType();
+         *
+         * @return ObjectType
+         * */
+        public ObjectType getCurrentObjectType() {
+            return this.currentType;
         }
 
         /**
