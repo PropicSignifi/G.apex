@@ -1287,8 +1287,9 @@ public class G {
 
             for(String key : mapping.keySet()) {
                 String field = mapping.get(key);
-                if(fields.containsKey(field)) {
-                    result.put(key, fields.get(field));
+                Object value = R.path.run(field, fields);
+                if(value != null) {
+                    result.put(key, value);
                 }
             }
 
