@@ -1175,7 +1175,7 @@ public class G {
      * */
     public class ResolvingContext {
         // Current field type
-        public ObjectType currentType;
+        private ObjectType currentType;
 
         // Current query data
         private Map<String, Object> queryData;
@@ -1230,6 +1230,19 @@ public class G {
             }
 
             return fields;
+        }
+
+        /**
+         * Get the SObject fields mapping
+         *
+         * Example:
+         * Map<String, String> mapping = context.getSObjectFieldMapping();
+         * // { 'name' => 'Name' }
+         *
+         * @return Map<String, String>
+         * */
+        public Map<String, String> getSObjectFieldMapping() {
+            return this.currentType.getSObjectFieldMapping();
         }
 
         /**
