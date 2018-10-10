@@ -65,6 +65,11 @@ public class G {
     public static final String TYPE_DATETIME = 'Datetime';
 
     /**
+     * Date type
+     * */
+    public static final String TYPE_DATE = 'Date';
+
+    /**
      * String type
      * */
     public static final String TYPE_STRING = 'String';
@@ -117,6 +122,11 @@ public class G {
      * Datetime DataType
      * */
     public static final DataType DatetimeType = new SimpleType(TYPE_DATETIME);
+
+    /**
+     * Date DataType
+     * */
+    public static final DataType DateType = new SimpleType(TYPE_DATE);
 
     /**
      * String DataType
@@ -769,6 +779,9 @@ public class G {
             }
             else if(type == DatetimeType) {
                 return R.toDatetime.run(rawValue);
+            }
+            else if(type == DateType) {
+                return R.toDate.run(rawValue);
             }
             else if(type == StringType) {
                 return R.toString.run(rawValue);
