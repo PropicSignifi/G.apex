@@ -1240,26 +1240,11 @@ public class G {
          * @return List<String>
          * */
         public List<String> getSObjectFields() {
-            if(this.currentType == null) {
-                return new List<String>();
-            }
-
-            Map<String, Object> data = this.getQueryData();
-            Map<String, String> mapping = this.currentType.getSObjectFieldMapping();
-            List<String> fields = new List<String>();
-            for(String rawKey : data.keySet()) {
-                List<String> aliasAndKey = getAliasAndKey(rawKey);
-                String key = aliasAndKey.get(1);
-                if(mapping.containsKey(key)) {
-                    fields.add(mapping.get(key));
-                }
-            }
-
-            return fields;
+            return getSObjectFieldMapping().values();
         }
 
         /**
-         * Get the SObject fields mapping
+         * Get the SObject fields mapping, filtered by the query data
          *
          * Example:
          * Map<String, String> mapping = context.getSObjectFieldMapping();
@@ -1268,7 +1253,23 @@ public class G {
          * @return Map<String, String>
          * */
         public Map<String, String> getSObjectFieldMapping() {
-            return this.currentType.getSObjectFieldMapping();
+            if(this.currentType == null) {
+                return new Map<String, String>();
+            }
+
+            Map<String, Object> data = this.getQueryData();
+            Map<String, String> mapping = this.currentType.getSObjectFieldMapping();
+            Map<String, String> result = new Map<String, String>();
+            for(String rawKey : data.keySet()) {
+                List<String> aliasAndKey = getAliasAndKey(rawKey);
+                String key = aliasAndKey.get(1);
+                if(mapping.containsKey(key)) {
+                    result.put(key, mapping.get(key));
+                }
+            }
+
+            return result;
+
         }
 
         /**
