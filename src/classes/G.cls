@@ -727,7 +727,11 @@ public class G {
 
             for(ObjectTypeField field : this.fields.values()) {
                 if(field.sObjectField != null) {
-                    result.put(field.name, G.addNamespace(field.sObjectField));
+                    String sObjectField = R.of(field.sObjectField)
+                        .split('\\.')
+                        .doMap(new AddNamespaceFunc())
+                        .doJoin('.').toString();
+                    result.put(field.name, sObjectField);
                 }
             }
 
@@ -1685,6 +1689,18 @@ public class G {
             ResolvingContext context = (ResolvingContext)arg3;
 
             return this.resolver.resolve(parent, args, context);
+        }
+    }
+
+    private class AddNamespaceFunc extends Func {
+        public AddNamespaceFunc() {
+            super(1);
+        }
+
+        public override Object exec(Object arg) {
+            String str = (String)arg;
+
+            return addNamespace(str);
         }
     }
 
