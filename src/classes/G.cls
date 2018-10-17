@@ -1218,6 +1218,18 @@ public class G {
         }
 
         /**
+         * Get the Object type
+         *
+         * Example:
+         * ObjectType objectType = context.getObjectType();
+         *
+         * @return ObjectType
+         * */
+        public ObjectType getObjectType() {
+            return this.currentType;
+        }
+
+        /**
          * Get the SObject type
          *
          * Example:
